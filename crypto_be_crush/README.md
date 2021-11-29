@@ -6,7 +6,7 @@ Un challenge de crypto qui nous demande de décrypter un échange intercepté co
 
 On nous fournit quelques fichiers :
 - Submission.md : décrit le processus de soumission de flag dont on a capturé un échange
-- encrypt_challenge.py : le code qui tourne sur le serveur et qui nous servira à chiffrer notre envoie
+- encrypt_challenge.py : le code qui tourne sur le serveur et qui nous servira à chiffrer notre envoi
 - ex_flag.json : un exemple du format de réponse à fournir
 
 
