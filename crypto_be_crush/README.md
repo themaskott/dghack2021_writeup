@@ -26,7 +26,7 @@ Ce clair est de la forme :
 
 Par ailleurs, quelques renseignements donnés en consignes vont être utiles :
 - la personne ayant soumit son flag est "Alice"
-- il s'agit du 10e encrypt_challenge
+- il s'agit du 10e challenge
 
 Nous pouvons alors supposer que le clair est de la forme
 
