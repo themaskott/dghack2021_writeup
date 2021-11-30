@@ -148,51 +148,59 @@ def decrypt(iv, m):
 def xor(key, cipher):
 	return bytes(a ^ b for a, b in zip(key, cipher) )
 
-# stdin/stdout version
+
+def affich(last, iv_tmp, ciphered_block, serv_cipher):
+    print('Last : ', last)
+    print('size : ', len(last) )
+    print('Iv server : ' + iv_tmp)
+    print( 'Block : ', ciphered_block )
+    print( 'Serv cipher : ' + serv_cipher )
+    print( 'Size : ', len(serv_cipher ))
+    print("\n")
+
 if __name__ == "__main__":
-    print("Input challenge :", CIPHER.hex() )
+
+    print("[+] Import des donnees initiales")
+    print(">>>Input challenge :", CIPHER.hex() )
     iv = CIPHER[0 : AES.block_size ]
     ciphered = CIPHER[AES.block_size:]
-    print("Iv : ", iv.hex() )
-    print("Ciphered :", ciphered.hex() )
-    print("Len : ", len(ciphered))
+    print(">>>Iv : ", iv.hex() )
+    print(">>>Ciphered :", ciphered.hex() )
+    print(">>>Len : ", len(ciphered))
+    print("\n")
 
-
+    # decoupage en bloc de 16 octets du chiffre
     ciphered_blocks = []
     nb_block = int( len(ciphered) / ( AES.block_size ) )
     print("Nb de block : ", nb_block )
     for i in range(nb_block):
         ciphered_blocks.append( ciphered[i * AES.block_size : (i+1) * AES.block_size ])
 
-    ch = list(x.hex() for x in ciphered_blocks )
-    for c in ch: print(c)
 
-    #print("Chiphered : ", ciphered_blocks )
+    print("[+] Test sur le bloc de clair connu")
 
-    #last = b'Alice","cid":10}'
-    #last = pkcs7_padding(b'')
+    # pour faire le test sur le dernier bloc = padding    
+    # last = pkcs7_padding(b'')
+    # n = 8
 
+    # pour faire le test sur le dernier bloc du clair
     last = b'Alice","cid":10}'
-
     n = 7
 
-    print('Last : ', last)
-    print('size : ', len(last) )
-
+    # connexion au serveur
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((HOST, PORT))
 
     rep = s.recv(1024)
+    print(rep)    
+    # recuperation de l iv utilisee par le serveur
     iv_tmp = str(rep).split('\\n')[1]
-    print('Iv server : ' + iv_tmp)
 
-    #message = xor(ciphered_blocks[0], iv)
-    #message = xor(message, bytes.fromhex(iv_tmp))
-
-
-    message = xor( last, ciphered_blocks[ n - 1] )
+    # preparation du message a soumettre
+    message = xor( last, ciphered_blocks[ n - 1] ) 
     message = xor(message, bytes.fromhex(iv_tmp))
 
+    # envoi
     s.send( bytes( message.hex(), 'utf-8') + b'\n' )
     rep = s.recv(1024)
 
@@ -201,35 +209,35 @@ if __name__ == "__main__":
     serv_cipher = serv_cipher.split(' ')[2]
     serv_cipher = serv_cipher[32:64]
 
-    print( 'Block : ', ciphered_blocks[ n ].hex())
-    print( 'Serv cipher : ' + serv_cipher )
-    print( 'Size : ', len(serv_cipher ))
+    # affichage
+    affich( last, iv_tmp, ciphered_blocks[ n - 1], serv_cipher )
 
+    # test d egalite
     print( serv_cipher == ciphered_blocks[ n ].hex())
 
-    print('------------------------------------------')
+    print("[+] Automatisation  / BF sur une partie du flag")
 
+    
+    # fin du flag
     #last = b'}}","user":"'
+    # n = 6
 
+    # debut du flag
     last = b':"DG\'hAck-{{'
-
     n = 5
 
-    hex_alph = '0123456789abcdef'
-    hex_alph = 'fedcba9876543210'
+    # hex_alph = '0123456789abcdef'
+    hex_alph = 'edcba9876543210'
 
     for b1 in hex_alph:
         for b2 in hex_alph:
             for b3 in hex_alph:
                 for b4 in hex_alph:
+ 
                     iv_tmp = rep.decode('utf-8').split('\n')[3]
 
                     last = b':"DG'+ b"'" +b'hAck-{{' + b1.encode('utf-8') + b2.encode('utf-8') + b3.encode('utf-8') + b4.encode('utf-8')
-                    print(last)
-                    print(len(last))
-
-                    print('Iv server : ' + iv_tmp)
-
+                    
                     message = xor( last, ciphered_blocks[ n - 1] )
                     message = xor(message, bytes.fromhex(iv_tmp))
 
@@ -241,21 +249,16 @@ if __name__ == "__main__":
                     serv_cipher = serv_cipher.split(' ')[2]
                     serv_cipher = serv_cipher[32:64]
 
-                    print( 'Block : ', ciphered_blocks[ n ].hex())
-                    print( 'Serv cipher : ' + serv_cipher )
-                    print( 'Size : ', len(serv_cipher ))
-
                     if ( serv_cipher == ciphered_blocks[ n ].hex()):
-                        b1ok = b1
-                        b2ok = b2
-                        b3ok = b3
-                        b4ok = b4
-                        print(b1, b2, b3, b4)
-                        exit(0)
+
+                        affich( last, iv_tmp, ciphered_blocks[ n - 1 ], serv_cipher )
+                        print( b1, b2, b3, b4 )
+                        break
+                        break
+                        break
                         break
 
-            #sleep(0.2)
-    print(b1ok, b2ok, b3ok, b4ok)
+
 
 ```
 
