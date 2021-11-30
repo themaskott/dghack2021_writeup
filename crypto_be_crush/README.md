@@ -63,7 +63,7 @@ Pour vérifier notre hypothèse, nous allons soumettre un bloc de padding et voi
 
 Il faut un peu préparer ce bloc avant, en deux temps.
 
-1- En effet : Cn = chiff( Pn xor Cn-1 )
+1- En effet : `Cn = chiff( Pn xor Cn-1 )`
 
 
 
@@ -75,7 +75,7 @@ Notre bloc n°10 serait donc le chiffré d'un bloc de padding xoré au bloc n°9
 
 Si on envoit un bloc P de 16 octets au serveur, celui ci nous répond 3 blocs de 16 octets:
 
-| IV | C | padding |
+`| IV | C | padding |`
 
 
 Où C n'est pas le chiffré de P, mais le chiffré de P xor IV.
@@ -86,9 +86,9 @@ Heureusement pour nous, l’interaction avec ce dernier se fait en 2 temps
 - 2 il nous demande notre message
 
 
-Au final pour tester notre idée, on envoit au serveur : **padding xor bloc9 xor iv**
+Au final pour tester notre idée, on envoit au serveur : **padding** xor **bloc9** xor **iv**
 
-Le serveur effectue **chiffrement( padding xor bloc9 xor iv xor iv )=chiffrement(padding xorbloc9)**
+Le serveur effectue **chiffrement( padding** xor **bloc9** xor **iv** xor **iv ) = chiffrement(padding** xor **bloc9)**
 
 Et il nous retourne bien la valeur du bloc n°10.
 
